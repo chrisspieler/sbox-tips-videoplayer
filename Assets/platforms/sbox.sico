@@ -1,0 +1,9 @@
+{
+  "Prefixes": [
+    "sbox.game/"
+  ],
+  "Icon": "ui/icons/sbox.png",
+  "CaseSensitive": false,
+  "__references": [],
+  "__version": 0
+}

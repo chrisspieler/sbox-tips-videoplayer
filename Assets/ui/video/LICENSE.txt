@@ -1,0 +1,1 @@
+This folder contains example videos intended for educational purposes only. These videos may NOT be redistributed. Refer to each video's corresponding Video Source resource (.vsrc file) for attribution and license information.

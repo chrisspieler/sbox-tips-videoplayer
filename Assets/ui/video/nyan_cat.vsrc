@@ -1,0 +1,10 @@
+{
+  "VideoPath": "ui\\video\\nyan_cat.mp4",
+  "Year": 2011,
+  "Title": "Nyan Cat! [Official]",
+  "Author": "youtube.com/@nyancat",
+  "Url": "https://www.youtube.com/watch?v=2yJgwwDcgV8",
+  "License": "licenses/fair_use.lcns",
+  "__references": [],
+  "__version": 0
+}

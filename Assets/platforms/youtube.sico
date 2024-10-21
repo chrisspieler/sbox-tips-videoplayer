@@ -1,0 +1,9 @@
+{
+  "Prefixes": [
+    "youtube.com/@"
+  ],
+  "Icon": "ui/icons/youtube.png",
+  "CaseSensitive": false,
+  "__references": [],
+  "__version": 0
+}
