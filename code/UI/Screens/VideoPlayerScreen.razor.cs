@@ -10,6 +10,8 @@ public partial class VideoPlayerScreen : PanelComponent
 	[Property, InputAction] public string ForwardAction { get; set; } = "right";
 	[Property, InputAction] public string BackAction { get; set; } = "left";
 
+	private VideoPanel VideoPanel { get; set; }
+
 	private int _currentVideoIndex;
 
 	protected override int BuildHash() => HashCode.Combine( CurrentVideo, Videos );

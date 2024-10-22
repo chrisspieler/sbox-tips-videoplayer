@@ -6,5 +6,8 @@
     {
         <AttributionPanel Source=@CurrentVideo/>
     }
-    <VideoPlayerPanel VideoPath=@CurrentVideoPath/>
+    <div id="videoArea">
+        <VideoPanel @ref=VideoPanel VideoPath=@CurrentVideoPath/>
+        <VideoControlOverlay VideoPanel=@VideoPanel/>
+    </div>
 </root>

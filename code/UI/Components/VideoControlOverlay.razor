@@ -1,0 +1,15 @@
+﻿@using Sandbox.UI;
+@inherits Panel
+
+<root>
+    <div id="bottomBar">
+        <div class="button symbol" onclick=@TogglePause>@PlayButtonIcon</div>
+        <div id="timecodeArea" class=@TimecodeAreaClass>
+            <div class="progress time">@ProgressText</div>
+            <div class="progress center">/</div>
+            <div class="progress time">@DurationText</div>
+        </div>
+        <SliderControl id="progressBar" Min=@ProgressSeconds Max=@DurationSeconds Value:bind=@PlaybackTime/>
+        <div class="button symbol" onclick=@ToggleMute>@VolumeButtonIcon</div>
+    </div>
+</root>

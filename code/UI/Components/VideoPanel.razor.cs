@@ -3,12 +3,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-public partial class VideoPlayerPanel : Panel, IDisposable
+public partial class VideoPanel : Panel, IDisposable
 {
 	[Change]
 	public string VideoPath { get; set; }
 	public bool ShouldLoop { get; set; } = true;
 	public bool IsLoading => _videoLoader.IsValid() && _videoLoader.IsLoading;
+	public bool IsPlaying => !HasReachedEnd && _player is not null && !_player.IsPaused;
+	public bool HasReachedEnd => _player != null && _player.PlaybackTime >= _player.Duration;
 
 	private VideoPlayer _player;
 	private AsyncVideoLoader _videoLoader;
@@ -18,9 +20,6 @@ public partial class VideoPlayerPanel : Panel, IDisposable
 	{
 		if ( !firstTime )
 			return;
-
-		// Pause or unpause the video when this panel is clicked.
-		AddEventListener( "onclick", _ => _player?.TogglePause() );
 
 		_ = PlayVideo( VideoPath );
 	}
@@ -65,6 +64,7 @@ public partial class VideoPlayerPanel : Panel, IDisposable
 		}
 
 		_player = videoPlayer;
+		_muted = _player.Muted;
 
 		// Set the background-image property to the VideoPanel's Texture.
 		Style.SetBackgroundImage( videoPlayer.Texture );
@@ -72,8 +72,31 @@ public partial class VideoPlayerPanel : Panel, IDisposable
 	}
 
 	public void Pause() => _player?.Pause();
+	public bool IsPaused => _player?.IsPaused == true;
 	public void Resume() => _player?.Resume();
 	public void TogglePause() => _player?.TogglePause();
+	public void Seek( float time ) => _player?.Seek( time );
+	public float Duration => _player?.Duration ?? 0f;
+	public float PlaybackTime
+	{
+		get => _player?.PlaybackTime ?? 0f;
+		set => Seek( value );
+	}
+
+	public bool Muted
+	{
+		get => _muted;
+		set
+		{
+			_muted = value;
+			if ( _player is not null )
+			{
+				_player.Muted = value;
+			}
+		}
+	}
+	private bool _muted;
+	
 	public void Stop()
 	{
 		_player?.Stop();
@@ -97,7 +120,7 @@ public partial class VideoPlayerPanel : Panel, IDisposable
 		_player.Present();
 
 		// Loop when the video concludes.
-		if ( ShouldLoop && _player.PlaybackTime >= _player.Duration )
+		if ( ShouldLoop && HasReachedEnd )
 		{
 			_player.Seek( 0f );
 		}
