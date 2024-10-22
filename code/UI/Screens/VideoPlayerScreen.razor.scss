@@ -8,8 +8,15 @@
     pointer-events: all;
 
     VideoPlayerPanel {
-        width: 1280px;
-        height: 720px;
-        border: 1px solid white;
+        width: 640px;
+        height: 360px;
+        border: 1px solid #FFF8;
+        border-radius: 5px;
+    }
+
+    AttributionPanel {
+        position: absolute;
+        z-index: 10;
+        bottom: 18%;
     }
 }

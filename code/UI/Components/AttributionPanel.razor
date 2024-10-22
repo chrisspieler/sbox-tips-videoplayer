@@ -1,0 +1,14 @@
+﻿@using Sandbox.UI;
+@inherits Panel
+
+<root>
+    <div class="title">@Title</div>
+    <div class="url">@Url</div>
+    <div class="row">
+        <div class="year">@Year</div>
+        @if ( Icon is not null )
+        {
+            <SocialMediaHandleDisplay Icon=@Icon Handle=@Handle/>
+        }
+    </div>
+</root>

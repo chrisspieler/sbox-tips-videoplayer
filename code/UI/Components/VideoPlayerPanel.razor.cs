@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 public partial class VideoPlayerPanel : Panel, IDisposable
 {
+	[Change]
 	public string VideoPath { get; set; }
 	public bool ShouldLoop { get; set; } = true;
 	public bool IsLoading => _videoLoader.IsValid() && _videoLoader.IsLoading;
@@ -24,8 +25,24 @@ public partial class VideoPlayerPanel : Panel, IDisposable
 		_ = PlayVideo( VideoPath );
 	}
 
+	private async void OnVideoPathChanged( string oldValue, string newValue )
+	{
+		if ( oldValue == newValue )
+			return;
+
+		if ( string.IsNullOrWhiteSpace( newValue ) )
+		{
+			Stop();
+			return;
+		}
+
+		await PlayVideo( newValue );
+	}
+
 	public async Task PlayVideo( string path )
 	{
+		Stop();
+
 		if ( IsLoading )
 		{
 			CancelVideoLoad();
@@ -52,6 +69,16 @@ public partial class VideoPlayerPanel : Panel, IDisposable
 		// Set the background-image property to the VideoPanel's Texture.
 		Style.SetBackgroundImage( videoPlayer.Texture );
 		StateHasChanged();
+	}
+
+	public void Pause() => _player?.Pause();
+	public void Resume() => _player?.Resume();
+	public void TogglePause() => _player?.TogglePause();
+	public void Stop()
+	{
+		_player?.Stop();
+		_player?.Dispose();
+		_player = null;
 	}
 
 	public void CancelVideoLoad()

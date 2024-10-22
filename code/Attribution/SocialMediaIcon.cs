@@ -19,7 +19,8 @@ public class SocialMediaIcon : GameResource
 	/// <summary>
 	/// An icon to be displayed in small sizes beside the user handle.
 	/// </summary>
-	public string Icon { get; set; }
+	[ImageAssetPath]
+	public string IconPath { get; set; }
 	/// <summary>
 	/// Returns true if either the prefix or the user handle are case sensitive.
 	/// </summary>
@@ -49,9 +50,8 @@ public class SocialMediaIcon : GameResource
 			if ( prefixStartIndex < 0 )
 				continue;
 
-			// The index of the final character in the prefix.
-			var prefixEndIndex = prefixStartIndex + prefix.Length;
-			userHandle = input[(prefixEndIndex + 1)..];
+			var handleStartIndex = prefixStartIndex + prefix.Length;
+			userHandle = input[handleStartIndex..];
 			return true;
 		}
 		return false;

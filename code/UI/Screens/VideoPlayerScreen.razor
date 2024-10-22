@@ -2,5 +2,9 @@
 @inherits PanelComponent
 
 <root>
+    @if ( CurrentVideo is not null)
+    {
+        <AttributionPanel Source=@CurrentVideo/>
+    }
     <VideoPlayerPanel VideoPath=@CurrentVideoPath/>
 </root>

@@ -1,0 +1,14 @@
+﻿@using Sandbox.UI;
+@inherits Panel
+
+<root>
+    @if ( Icon is not null)
+    {
+        <img class="icon image" src=@Icon.IconPath/>
+    }
+    else
+    {
+        <div class="icon text">@@</div>
+    }
+    <div class="handle">@Handle</div>
+</root>
