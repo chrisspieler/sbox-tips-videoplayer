@@ -9,7 +9,8 @@
             <div class="progress center">/</div>
             <div class="progress time">@DurationText</div>
         </div>
-        <SliderControl id="progressBar" Min=@ProgressSeconds Max=@DurationSeconds Value:bind=@PlaybackTime/>
+        <SliderControl id="progressBar" Min=@(0) Max=@DurationSeconds 
+            Value:bind=@PlaybackTime OnValueChanged=@ProgressBarChanged ShowValueTooltip=@false/>
         <div class="button symbol" onclick=@ToggleMute>@VolumeButtonIcon</div>
     </div>
 </root>

@@ -50,14 +50,22 @@
 
             .inner {
                 justify-content: center;
-
+                min-height: 0px;
+                
                 .track {
-                    position: relative;
+                    height: 14px;
+                    margin: 0px;
 
                     .thumb {
-                        position: absolute;
+                        height: 14px;
+                        width: 14px;
                     }
                 }
+            }
+
+            .value-tooltip {
+                // Only required because SliderControl.ShowValueTooltip isn't hooked up to anything.
+                display: none;
             }
         }
     }

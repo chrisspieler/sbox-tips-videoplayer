@@ -7,7 +7,7 @@ public partial class VideoControlOverlay : Panel
 
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( VideoPanel?.IsPlaying, VideoPanel?.IsPaused, VideoPanel?.Muted, TimecodeAreaClass );
+		return HashCode.Combine( VideoPanel?.IsPlaying, VideoPanel?.IsPaused, VideoPanel?.Muted, TimecodeAreaClass, (int)ProgressSeconds );
 	}
 
 	private string PlayButtonIcon
@@ -53,6 +53,11 @@ public partial class VideoControlOverlay : Panel
 		set => VideoPanel?.Seek( value );
 	}
 	private string VolumeButtonIcon => VideoPanel?.Muted == false ? "volume_up" : "volume_off";
+
+	private void ProgressBarChanged( float value )
+	{
+		PlaybackTime = value;
+	}
 
 	private void TogglePause() => VideoPanel?.TogglePause();
 	private void ToggleMute()
