@@ -7,6 +7,17 @@
     align-items: center;
     pointer-events: all;
 
+    #notice {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX( -50% );
+
+        font-family: Poppins;
+        color: white;
+        font-size: 32px;
+    }
+
     #videoArea {
         position: relative;
         width: 640px;
