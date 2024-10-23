@@ -15,7 +15,12 @@ public class AsyncVideoLoader : IValid, IDisposable
 
 	public AsyncVideoLoader( VideoPlayer player )
 	{
-		VideoPlayer = player ?? throw new ArgumentNullException( nameof( player ) );
+		if ( player is null )
+		{
+			player = new VideoPlayer();
+			_ownsVideoPlayer = true;
+		}
+		VideoPlayer = player;
 	}
 
 	public VideoPlayer VideoPlayer { get; private set; }

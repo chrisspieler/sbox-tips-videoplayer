@@ -9,10 +9,10 @@ public partial class VideoPanel : Panel, IDisposable
 	public string VideoPath { get; set; }
 	public bool ShouldLoop { get; set; } = true;
 	public bool IsLoading => _videoLoader.IsValid() && _videoLoader.IsLoading;
-	public bool IsPlaying => !HasReachedEnd && _player is not null && !_player.IsPaused;
-	public bool HasReachedEnd => _player != null && _player.PlaybackTime >= _player.Duration;
+	public bool IsPlaying => !HasReachedEnd && _videoPlayer is not null && !_videoPlayer.IsPaused;
+	public bool HasReachedEnd => _videoPlayer != null && _videoPlayer.PlaybackTime >= _videoPlayer.Duration;
 
-	private VideoPlayer _player;
+	private VideoPlayer _videoPlayer;
 	private AsyncVideoLoader _videoLoader;
 	private CancellationTokenSource _cancelSource = new();
 
@@ -40,14 +40,12 @@ public partial class VideoPanel : Panel, IDisposable
 
 	public async Task PlayVideo( string path )
 	{
-		Stop();
-
 		if ( IsLoading )
 		{
 			CancelVideoLoad();
 		}
 
-		_videoLoader = new AsyncVideoLoader();
+		_videoLoader = new AsyncVideoLoader( _videoPlayer );
 		_cancelSource = new CancellationTokenSource();
 
 		// Make copies of the things that might get clobbered while we await.
@@ -63,23 +61,23 @@ public partial class VideoPanel : Panel, IDisposable
 			return;
 		}
 
-		_player = videoPlayer;
-		_muted = _player.Muted;
+		_videoPlayer = videoPlayer;
+		_muted = _videoPlayer.Muted;
 
 		// Set the background-image property to the VideoPanel's Texture.
 		Style.SetBackgroundImage( videoPlayer.Texture );
 		StateHasChanged();
 	}
 
-	public void Pause() => _player?.Pause();
-	public bool IsPaused => _player?.IsPaused == true;
-	public void Resume() => _player?.Resume();
-	public void TogglePause() => _player?.TogglePause();
-	public void Seek( float time ) => _player?.Seek( time );
-	public float Duration => _player?.Duration ?? 0f;
+	public void Pause() => _videoPlayer?.Pause();
+	public bool IsPaused => _videoPlayer?.IsPaused == true;
+	public void Resume() => _videoPlayer?.Resume();
+	public void TogglePause() => _videoPlayer?.TogglePause();
+	public void Seek( float time ) => _videoPlayer?.Seek( time );
+	public float Duration => _videoPlayer?.Duration ?? 0f;
 	public float PlaybackTime
 	{
-		get => _player?.PlaybackTime ?? 0f;
+		get => _videoPlayer?.PlaybackTime ?? 0f;
 		set => Seek( value );
 	}
 
@@ -89,9 +87,9 @@ public partial class VideoPanel : Panel, IDisposable
 		set
 		{
 			_muted = value;
-			if ( _player is not null )
+			if ( _videoPlayer is not null )
 			{
-				_player.Muted = value;
+				_videoPlayer.Muted = value;
 			}
 		}
 	}
@@ -99,9 +97,9 @@ public partial class VideoPanel : Panel, IDisposable
 	
 	public void Stop()
 	{
-		_player?.Stop();
-		_player?.Dispose();
-		_player = null;
+		_videoPlayer?.Stop();
+		_videoPlayer?.Dispose();
+		_videoPlayer = null;
 	}
 
 	public void CancelVideoLoad()
@@ -113,23 +111,23 @@ public partial class VideoPanel : Panel, IDisposable
 
 	public override void Tick()
 	{
-		if ( _player is null )
+		if ( _videoPlayer is null )
 			return;
 
 		// The VideoPlayer texture will not update unless Present is called.
-		_player.Present();
+		_videoPlayer.Present();
 
 		// Loop when the video concludes.
 		if ( ShouldLoop && HasReachedEnd )
 		{
-			_player.Seek( 0f );
+			_videoPlayer.Seek( 0f );
 		}
 	}
 
 	public void Dispose()
 	{
 		_cancelSource?.Dispose();
-		_player?.Dispose();
+		_videoPlayer?.Dispose();
 		GC.SuppressFinalize( this );
 	}
 
