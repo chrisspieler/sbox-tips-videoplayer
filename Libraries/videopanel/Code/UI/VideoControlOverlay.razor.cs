@@ -1,6 +1,8 @@
 ﻿using Sandbox.UI;
 using System;
 
+namespace Duccsoft;
+
 public partial class VideoControlOverlay : Panel
 {
 	public VideoPanel VideoPanel { get; set; }

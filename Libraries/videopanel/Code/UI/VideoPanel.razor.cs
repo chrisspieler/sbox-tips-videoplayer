@@ -3,6 +3,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+namespace Duccsoft;
+
 public partial class VideoPanel : Panel, IDisposable
 {
 	[Change]

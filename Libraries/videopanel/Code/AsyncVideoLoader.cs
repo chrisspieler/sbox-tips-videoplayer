@@ -2,6 +2,8 @@
 using System.Threading;
 using System;
 
+namespace Duccsoft;
+
 public class AsyncVideoLoader : IValid, IDisposable
 {
 	[ConVar( "video_async_test_delay" )]
