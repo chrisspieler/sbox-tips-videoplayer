@@ -2,13 +2,27 @@
 @inherits PanelComponent
 
 <root>
+    <div id="topArea">
+        <div id="switchArea">
+            <label>background-image</label>
+            <SwitchControl Value:bind=@UseVideoPlayer/>
+            <label>VideoPlayer</label>
+        </div>
+    </div>
+    <div id="videoArea">
+        @if ( UseVideoPlayer )
+        {
+            <VideoPanel @ref=VideoPanel VideoPath=@CurrentVideoPath/>
+            <VideoControlOverlay VideoPanel=@VideoPanel/>
+        }
+        else
+        {
+            <StyleVideoPanel VideoPath=@CurrentVideoPath/>
+        }
+    </div>
     @if ( CurrentVideo is not null)
     {
         <AttributionPanel Source=@CurrentVideo/>
     }
-    <label id="notice">All copyrighted videos are excerpts displayed for educational purposes.</label>
-    <div id="videoArea">
-        <VideoPanel @ref=VideoPanel VideoPath=@CurrentVideoPath/>
-        <VideoControlOverlay VideoPanel=@VideoPanel/>
-    </div>
+    <label id="notice">All copyrighted videos are excerpts presented for educational purposes only.</label>
 </root>

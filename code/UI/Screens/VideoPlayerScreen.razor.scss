@@ -2,28 +2,45 @@
     position: relative;
     width: 100%;
     height: 100%;
+    padding: 5%;
     background-color: #111;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     pointer-events: all;
 
-    #notice {
-        position: absolute;
-        top: 5%;
-        left: 50%;
-        transform: translateX( -50% );
+    #topArea {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+        padding: 15px;
 
-        font-family: Poppins;
-        color: white;
-        font-size: 32px;
+        #switchArea {
+            margin-top: 15px;
+
+            > SwitchControl {
+                justify-content: center;
+            }
+
+            > label {
+                font-family: Roboto;
+                color: white;
+                font-size: 24px;
+            }
+        }
     }
 
     #videoArea {
         position: relative;
         width: 640px;
         height: 360px;
-        border: 1px solid #FFF4;
+        border: 1px solid #FFFFFF05;
         border-radius: 5px;
+
+        > StyleVideoPanel {
+            width: 100%;
+            height: 100%;
+        }
 
         > VideoPanel {
             width: 100%;
@@ -31,9 +48,13 @@
         }
     }
 
+    #notice {
+        font-family: Roboto;
+        color: #FFFA;
+        font-size: 28px;
+    }
+
     > AttributionPanel {
-        position: absolute;
         z-index: 10;
-        bottom: 18%;
     }
 }
