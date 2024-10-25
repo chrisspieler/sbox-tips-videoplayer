@@ -66,18 +66,6 @@
           "Enabled": true,
           "Components": [
             {
-              "__type": "StyleVideoScreen",
-              "__guid": "aac9fe68-f082-46dc-b0fc-f7e68b54b8dd",
-              "__enabled": false,
-              "VideoPaths": [
-                "ui/video/ducks.mp4",
-                "ui/video/nyan_cat.mp4",
-                "ui/video/skibidi.mp4",
-                "ui/video/wide_apple.mp4"
-              ],
-              "CurrentVideoPath": "ui/video/ducks.mp4"
-            },
-            {
               "__type": "VideoPlayerScreen",
               "__guid": "aa0b9eba-4880-43c4-b315-809ef89b3cc9",
               "Videos": [],
