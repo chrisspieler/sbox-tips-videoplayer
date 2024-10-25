@@ -5,7 +5,7 @@ namespace Duccsoft;
 
 public partial class VideoControlOverlay : Panel
 {
-	public VideoPanel VideoPanel { get; set; }
+	public IVideoPanel VideoPanel { get; set; }
 	public bool AutoHide { get; set; } = true;
 
 	private string OverlayClass => AutoHide ? "auto-hide" : string.Empty;

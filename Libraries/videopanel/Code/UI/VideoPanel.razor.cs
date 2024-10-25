@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Duccsoft;
 
-public partial class VideoPanel : Panel, IDisposable
+public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 {
 	[Change]
 	public string VideoPath { get; set; }
