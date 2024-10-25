@@ -6,10 +6,13 @@ namespace Duccsoft;
 public partial class VideoControlOverlay : Panel
 {
 	public VideoPanel VideoPanel { get; set; }
+	public bool AutoHide { get; set; } = true;
+
+	private string OverlayClass => AutoHide ? "auto-hide" : string.Empty;
 
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( VideoPanel?.IsPlaying, VideoPanel?.IsPaused, VideoPanel?.Muted, TimecodeAreaClass, (int)ProgressSeconds );
+		return HashCode.Combine( VideoPanel?.IsPlaying, VideoPanel?.IsPaused, VideoPanel?.Muted, (int)ProgressSeconds, TimecodeAreaClass, OverlayClass  );
 	}
 
 	private string PlayButtonIcon

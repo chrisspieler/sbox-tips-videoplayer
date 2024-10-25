@@ -1,19 +1,55 @@
-﻿VideoControlOverlay {
+﻿@keyframes pop-up {
+    from {
+        opacity: 0;
+        transform: translateY( 100% );
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY( 0% );
+    }
+}
+
+VideoControlOverlay {
     position: absolute;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 
-    #bottomBar {
+    &.auto-hide {
+        &:hover > #bottomBar {
+            transform: translateY( 0% );
+            opacity: 1;
+            animation: pop-up 0.08s;
+        }
+    }
+
+
+
+    > #bottomBar {
         position: absolute;
         bottom: 0%;
         width: 100%;
         align-items: center;
-        padding: 10px;
+        padding: 5px;
         font-family: Poppins;
         background-color: #000000FC;
         color: #FFFFFFF0;
+        opacity: 0;
 
         .button {
+            border: 1px solid #FFFFFF02;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: #000E;
+
+            &:hover {
+                background-color: #222E;
+            }
+
+            &:active {
+                transform: scale(0.98);
+            }
         }
 
         .symbol {
@@ -27,7 +63,7 @@
 
         #timecodeArea {
             position: relative;
-            width: 25%;
+            width: 20%;
             justify-content: center;
             align-items: center;
             font-size: 18px;
@@ -43,6 +79,10 @@
                 &.time {
                     min-width: 10%;
                 }
+
+                &.right {
+                    justify-content: flex-end;
+                }
             }
         }
 
@@ -51,7 +91,7 @@
             .inner {
                 justify-content: center;
                 min-height: 0px;
-                
+
                 .track {
                     height: 14px;
                     margin: 0px;

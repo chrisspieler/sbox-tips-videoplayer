@@ -2,13 +2,13 @@
 @namespace Duccsoft
 @inherits Panel
 
-<root>
+<root class=@OverlayClass>
     <div id="bottomBar">
         <div class="button symbol" onclick=@TogglePause>@PlayButtonIcon</div>
         <div id="timecodeArea" class=@TimecodeAreaClass>
             <div class="progress time">@ProgressText</div>
             <div class="progress center">/</div>
-            <div class="progress time">@DurationText</div>
+            <div class="progress time right">@DurationText</div>
         </div>
         <SliderControl id="progressBar" Min=@(0) Max=@DurationSeconds 
             Value:bind=@PlaybackTime OnValueChanged=@ProgressBarChanged ShowValueTooltip=@false/>
