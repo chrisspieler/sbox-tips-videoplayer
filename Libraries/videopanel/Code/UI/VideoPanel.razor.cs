@@ -21,10 +21,10 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 		set
 		{
 			_audioSource = value;
-			if ( Audio is not null )
+			if ( _audioAccessor is not null )
 			{
-				Audio.Target = value;
-				_audioAccessor?.Update();
+				_audioAccessor.Target = value;
+				_audioAccessor.Update();
 			}
 		}
 	}

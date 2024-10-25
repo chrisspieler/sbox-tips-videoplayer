@@ -3,7 +3,8 @@
 namespace Duccsoft;
 
 /// <summary>
-/// Stores and applies the audio settings of a VideoPlayer.
+/// Stores and applies the audio settings of a VideoPlayer, with having the
+/// sound follow a GameObject.
 /// </summary>
 public class TrackingAudioAccessor : IAudioAccessor
 {
