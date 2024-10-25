@@ -24,7 +24,6 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 			if ( _audioAccessor is not null )
 			{
 				_audioAccessor.Target = value;
-				_audioAccessor.Update();
 			}
 		}
 	}
@@ -57,11 +56,8 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 			CancelVideoLoad();
 		}
 
-		if ( _videoPlayer is null )
-		{
-			_videoPlayer = new VideoPlayer();
-			_audioAccessor = new TrackingAudioAccessor();
-		}
+		_videoPlayer ??= new VideoPlayer();
+		_audioAccessor ??= new TrackingAudioAccessor();
 
 		_audioAccessor.VideoPlayer = _videoPlayer;
 		_audioAccessor.Target = AudioSource;
@@ -79,8 +75,6 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 			videoPlayer?.Stop();
 			return;
 		}
-
-		_audioAccessor.Update();
 		_videoPlayer = videoPlayer;
 
 		// Set the background-image property to the VideoPanel's Texture.
@@ -125,8 +119,6 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 			StateHasChanged();
 		}
 
-		_audioAccessor.Update();
-
 		// Loop when the video concludes.
 		if ( ShouldLoop && HasReachedEnd )
 		{
@@ -138,6 +130,7 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 	{
 		_cancelSource?.Dispose();
 		_videoPlayer?.Dispose();
+		_audioAccessor?.Dispose();
 		GC.SuppressFinalize( this );
 	}
 
