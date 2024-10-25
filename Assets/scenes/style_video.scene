@@ -71,7 +71,35 @@
               "Videos": [],
               "AutoPopulateVideosOnStart": true,
               "BackAction": "left",
-              "ForwardAction": "right"
+              "ForwardAction": "right",
+              "PanningAudioSource": {
+                "_type": "gameobject",
+                "go": "0074a357-8c01-445f-9972-50d750239ea1"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "__guid": "b9b7ea5c-3dbc-475b-8124-dbcdbc5469bc",
+      "Flags": 0,
+      "Name": "Audio Origin",
+      "Position": "50,0,75",
+      "Enabled": true,
+      "Children": [
+        {
+          "__guid": "0074a357-8c01-445f-9972-50d750239ea1",
+          "Flags": 0,
+          "Name": "Panning Audio",
+          "Enabled": true,
+          "Components": [
+            {
+              "__type": "Oscillator",
+              "__guid": "e8afbb37-4bbe-4ce9-bd20-0e2341a2c4fb",
+              "Amplitude": 25,
+              "Direction": "0,1,0",
+              "Frequency": 0.4
             }
           ]
         }

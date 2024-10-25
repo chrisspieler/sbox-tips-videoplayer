@@ -4,15 +4,25 @@
 <root>
     <div id="topArea">
         <div id="switchArea">
-            <label>background-image</label>
-            <SwitchControl Value:bind=@UseVideoPlayer/>
-            <label>VideoPlayer</label>
+            <div class="switch-option">
+                <label class="left">background-image</label>
+                <SwitchControl class="visible" Value:bind=@UseVideoPlayer/>
+                <label class="right">VideoPlayer</label>
+            </div>
+            @if ( UseVideoPlayer )
+            {
+                <div class="switch-option">
+                    <label class="left"></label>
+                    <SwitchControl id="spatializeSwitch" class="wide" Value:bind=@SpatializeAudio/>
+                    <label class="right">Spatialize Audio</label>
+                </div>
+            }
         </div>
     </div>
     <div id="videoArea">
         @if ( UseVideoPlayer )
         {
-            <VideoPanel @ref=VideoPanel VideoPath=@CurrentVideoPath/>
+            <VideoPanel @ref=VideoPanel VideoPath=@CurrentVideoPath AudioSource=@AudioSource/>
             <VideoControlOverlay VideoPanel=@VideoPanel/>
         }
         else

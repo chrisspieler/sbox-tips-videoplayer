@@ -6,7 +6,7 @@ public interface IVideoPanel : IValid
 	bool IsPlaying { get; }
 	float PlaybackTime { get; }
 	bool IsPaused { get; }
-	bool Muted { get; set; }
 	void Seek( float time );
 	void TogglePause();
+	IAudioAccessor Audio { get; }
 }

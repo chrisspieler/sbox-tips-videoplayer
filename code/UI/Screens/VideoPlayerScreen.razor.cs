@@ -9,13 +9,26 @@ public partial class VideoPlayerScreen : PanelComponent
 	[Property] public bool AutoPopulateVideosOnStart { get; set; }
 	[Property, InputAction] public string ForwardAction { get; set; } = "right";
 	[Property, InputAction] public string BackAction { get; set; } = "left";
+	[Property] public GameObject PanningAudioSource { get; set; }
 
 	private VideoPanel VideoPanel { get; set; }
 	private bool UseVideoPlayer { get; set; }
 
+	private GameObject AudioSource { get; set; }
+	private bool SpatializeAudio 
+	{
+		get => _spatializeAudio;
+		set
+		{
+			_spatializeAudio = value;
+			AudioSource = SpatializeAudio ? PanningAudioSource : null;
+		}
+	}
+	private bool _spatializeAudio;
+
 	private int _currentVideoIndex;
 
-	protected override int BuildHash() => HashCode.Combine( CurrentVideo, Videos, UseVideoPlayer );
+	protected override int BuildHash() => HashCode.Combine( CurrentVideo, Videos, UseVideoPlayer, SpatializeAudio );
 
 	protected override void OnStart()
 	{
