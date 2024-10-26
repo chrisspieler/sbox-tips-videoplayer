@@ -4,14 +4,27 @@ using System;
 namespace Duccsoft;
 
 /// <summary>
-/// A Panel meant to stretch over a VideoPanel and provide a progress bar and buttons.
+/// A Panel meant to stretch over an entire VideoPanel and provide a progress bar and buttons.
 /// </summary>
 public partial class VideoControlOverlay : Panel
 {
+	/// <summary>
+	/// The VideoPanel instance that we will be controlling. You may replace this with any
+	/// <see cref="IVideoPanel"/> object that you that you wish to control using this UI.
+	/// </summary>
 	public IVideoPanel VideoPanel { get; set; }
+	/// <summary>
+	/// If true, the video controls will automatically be hidden after the AutoHideDelay period has elapsed
+	/// and the user is not hovering their mouse over this panel.
+	/// </summary>
 	public bool AutoHide { get; set; } = true;
-	public float AutoHideDelay { get; set; } = 0f;
+	/// <summary>
+	/// If AutoHide is true, this is the time in seconds that must elapse before this panel
+	/// will conceal the video controls.
+	/// </summary>
+	public float AutoHideDelay { get; set; } = 1f;
 
+	#region Presentation
 	private string OverlayClass
 	{
 		get
@@ -28,16 +41,21 @@ public partial class VideoControlOverlay : Panel
 			return _lastHovered > AutoHideDelay ? "conceal" : string.Empty;
 		}
 	}
-	private RealTimeSince _lastHovered = 20f;
-
-	protected override int BuildHash()
+	private string TimecodeAreaClass => ProgressSeconds > 3600 || DurationSeconds > 3600
+		? "big"
+		: string.Empty;
+	private string ProgressText => FormatTime( ProgressSeconds );
+	private string DurationText => FormatTime( DurationSeconds );
+	private string FormatTime( float seconds )
 	{
-		return HashCode.Combine( VideoPanel?.IsPlaying, VideoPanel?.IsPaused, VideoPanel?.Audio?.Muted, (int)ProgressSeconds, TimecodeAreaClass, OverlayClass  );
+		var time = TimeSpan.FromSeconds( seconds );
+		return time.Hours > 0
+			? time.ToString( "hh':'mm':'ss" )
+			: time.ToString( "mm':'ss" );
 	}
-
 	private string PlayButtonIcon
 	{
-		get 
+		get
 		{
 			if ( !VideoPanel.IsValid() )
 				return "play_arrow";
@@ -46,38 +64,24 @@ public partial class VideoControlOverlay : Panel
 		}
 	}
 
-	private string TimecodeAreaClass => ProgressSeconds > 3600 || DurationSeconds > 3600
-		? "big"
-		: string.Empty;
-	private string ProgressText => FormatTime( ProgressSeconds );
-	private string DurationText => FormatTime( DurationSeconds );
-
-	private string FormatTime( float seconds )
-	{
-		var time = TimeSpan.FromSeconds( seconds );
-		return time.Hours > 0
-			? time.ToString( "hh':'mm':'ss" )
-			: time.ToString( "mm':'ss" );
-	}
-
 	private float ProgressSeconds => VideoPanel?.PlaybackTime ?? 0f;
 	private float DurationSeconds => VideoPanel?.Duration ?? 0f;
-	private float ProgressPercent
-	{
-		get
-		{
-			if ( ProgressSeconds == 0f || DurationSeconds == 0f )
-				return 0f;
+	private string VolumeButtonIcon => VideoPanel?.Audio?.Muted == false ? "volume_up" : "volume_off";
+	#endregion
 
-			return ProgressSeconds / DurationSeconds;
-		}
+	private RealTimeSince _lastHovered = 20f;
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( VideoPanel?.IsPlaying, VideoPanel?.IsPaused, VideoPanel?.Audio?.Muted, (int)ProgressSeconds, TimecodeAreaClass, OverlayClass  );
 	}
+
+	#region Controls
 	private float PlaybackTime
 	{
 		get => ProgressSeconds;
 		set => VideoPanel?.Seek( value );
 	}
-	private string VolumeButtonIcon => VideoPanel?.Audio?.Muted == false ? "volume_up" : "volume_off";
 
 	private void ProgressBarChanged( float value )
 	{
@@ -92,4 +96,5 @@ public partial class VideoControlOverlay : Panel
 
 		VideoPanel.Audio.Muted = !VideoPanel.Audio.Muted;
 	}
+	#endregion
 }
