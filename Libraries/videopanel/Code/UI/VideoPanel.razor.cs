@@ -297,6 +297,10 @@ public partial class VideoPanel : Panel, IVideoPanel
 
 	public override void OnDeleted()
 	{
+		CancelVideoLoad();
+		VideoPlayer?.Stop();
+		VideoPlayer?.Dispose();
+		VideoTexture?.Dispose();
 		_audioAccessor?.Dispose();
 	}
 }
