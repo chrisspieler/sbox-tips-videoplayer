@@ -8,7 +8,7 @@ namespace Duccsoft;
 /// Provides a handy asynchronous wrapper for loading a VideoPlayer and waiting
 /// until its video and audio are both loaded.
 /// </summary>
-public class AsyncVideoLoader : IValid, IDisposable
+public class AsyncVideoLoader : IDisposable
 {
 	public AsyncVideoLoader() 
 	{
@@ -28,9 +28,7 @@ public class AsyncVideoLoader : IValid, IDisposable
 
 	public VideoPlayer VideoPlayer { get; private set; }
 	public bool IsLoading { get; private set; }
-	public bool IsValid => IsLoading || _isFresh;
 
-	private bool _isFresh = true;
 	private Action _onLoaded;
 	private Action _onAudioReady;
 	private bool _ownsVideoPlayer;
@@ -56,13 +54,12 @@ public class AsyncVideoLoader : IValid, IDisposable
 		// Attempting to play a video from a thread would throw an exception.
 		await GameTask.MainThread( cancelToken );
 
-		if ( !_isFresh )
+		if ( IsLoading )
 		{
-			throw new InvalidOperationException( $"Attempted to load video twice in same {nameof( AsyncVideoLoader )}" );
+			throw new InvalidOperationException( "Another video was already being loaded. Check IsLoading or create a new instance of AsyncVideoLoader." );
 		}
 
 		IsLoading = true;
-		_isFresh = false;
 
 		bool videoLoaded = false;
 		bool audioLoaded = false;

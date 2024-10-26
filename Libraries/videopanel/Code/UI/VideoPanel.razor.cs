@@ -28,7 +28,7 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 	/// <summary>
 	/// If true, the video is in the process of being loaded (e.g. from a remote server).
 	/// </summary>
-	public virtual bool IsLoading => _videoLoader.IsValid() && _videoLoader.IsLoading;
+	public virtual bool IsLoading => _videoLoader?.IsLoading == true;
 	/// <summary>
 	/// If true, the video is playing, is not paused, and has not yet finished playing.
 	/// </summary>
@@ -98,6 +98,7 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 	// Internal state
 	protected VideoPlayer VideoPlayer { get; set; }
 	private AsyncVideoLoader _videoLoader;
+	private Task<VideoPlayer> _videoLoadTask;
 	private TrackingAudioAccessor _audioAccessor;
 	private CancellationTokenSource _cancelSource = new();
 
@@ -132,9 +133,11 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 		}
 
 		// Cancel whatever other video might be loading.
-		if ( IsLoading )
+		if ( _videoLoadTask is not null )
 		{
 			CancelVideoLoad();
+			// Wait for that video to finish cancelling before we load our own.
+			await _videoLoadTask;
 		}
 
 		OnPreVideoLoad();
@@ -144,7 +147,9 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 		// Cache the CancellationToken because Task.IsCanceled isn't whitelisted,
 		// and subsequent calls to PlayVideo would create a new CancellationTokenSource.
 		var cancelToken = _cancelSource.Token;
-		VideoPlayer = await LoadVideo( cancelToken );
+		_videoLoadTask = LoadVideo( cancelToken );
+		VideoPlayer = await _videoLoadTask;
+		_videoLoadTask = null;
 
 		// If loading the video was cancelled...
 		if ( cancelToken.IsCancellationRequested )
@@ -205,7 +210,7 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 	/// </summary>
 	protected virtual async Task<VideoPlayer> LoadVideo( CancellationToken cancelToken )
 	{
-		_videoLoader = new AsyncVideoLoader( VideoPlayer );
+		_videoLoader ??= new AsyncVideoLoader( VideoPlayer );
 
 		if ( VideoRoot == VideoRoot.WebStream )
 		{
@@ -220,7 +225,6 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 	private void CancelVideoLoad()
 	{
 		_cancelSource?.Cancel();
-		_videoLoader = null;
 		_cancelSource?.Dispose();
 		_cancelSource = null;
 	}
