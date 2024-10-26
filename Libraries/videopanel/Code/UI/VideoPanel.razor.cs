@@ -28,10 +28,10 @@ public partial class VideoPanel : Panel, IVideoPanel
 	/// <summary>
 	/// If true, the video is in the process of being loaded (e.g. from a remote server).
 	/// </summary>
-	public virtual bool IsLoading => _videoLoader?.IsLoading == true;
+	public virtual bool IsLoading => _videoLoader?.IsLoading != false || ( IsPlaying && _sinceLastTextureUpdate > 0.2f );
 	/// <summary>
 	/// If true, the video is playing, is not paused, and has not yet finished playing.
-	/// </summary>
+	/// </summary>a
 	public virtual bool IsPlaying => !HasReachedEnd && VideoPlayer is not null && !VideoPlayer.IsPaused;
 	/// <summary>
 	/// If true, this video has reached the end of the file. If ShouldLoop is enabled, the video will
@@ -97,10 +97,12 @@ public partial class VideoPanel : Panel, IVideoPanel
 
 	// Internal state
 	protected VideoPlayer VideoPlayer { get; set; }
+	protected Texture VideoTexture { get; set; }
 	private AsyncVideoLoader _videoLoader;
 	private Task<VideoPlayer> _videoLoadTask;
 	private TrackingAudioAccessor _audioAccessor;
 	private CancellationTokenSource _cancelSource = new();
+	private RealTimeSince _sinceLastTextureUpdate;
 
 
 
@@ -125,14 +127,16 @@ public partial class VideoPanel : Panel, IVideoPanel
 		_previousVideoPath = VideoPath;
 		_previousVideoRoot = VideoRoot;
 
-		// Blank out the background while loading a new video, or when stopping the previous one.
+		Stop();
+
+		// Blank out the background when setting a new background image.
 		Style.SetBackgroundImage( (Texture)null );
 		StateHasChanged();
+		VideoTexture = null;
 
 		// Trying to play nothing? Success means stopping the current video.
 		if ( string.IsNullOrWhiteSpace( VideoPath ) )
 		{
-			Stop();
 			return;
 		}
 
@@ -158,6 +162,7 @@ public partial class VideoPanel : Panel, IVideoPanel
 		// If loading the video was cancelled...
 		if ( cancelToken.IsCancellationRequested )
 		{
+			Log.Info( "cancel" );
 			// ...don't touch the video player, and don't update anything, because
 			// there may be another video that began loading later and finished before
 			// this one, and we don't want to overwrite the effect it had.
@@ -172,7 +177,26 @@ public partial class VideoPanel : Panel, IVideoPanel
 	/// <summary>
 	/// Called during PlayVideo before LoadVideo.
 	/// </summary>
-	protected virtual void OnPreVideoLoad() { }
+	protected virtual void OnPreVideoLoad() 
+	{
+		VideoPlayer ??= new VideoPlayer();
+		VideoPlayer.OnTextureData = OnTextureData;
+	}
+
+	protected virtual void OnTextureData( ReadOnlySpan<byte> span, Vector2 size )
+	{
+		_sinceLastTextureUpdate = 0f;
+		int width = (int)size.x;
+		int height = (int)size.y;
+		if ( VideoTexture is null || VideoTexture.Size != size )
+		{
+			VideoTexture = Texture.Create( width, height, ImageFormat.RGBA8888 )
+				.WithName( "VideoPanel_Texture" )
+				.Finish();
+			UpdateBackgroundImage();
+		}
+		VideoTexture.Update( span, 0, 0, width, height );
+	}
 
 	/// <summary>
 	/// By default, will ensure that a TrackingAudioAccessor is created and
@@ -198,7 +222,7 @@ public partial class VideoPanel : Panel, IVideoPanel
 			return;
 
 		// Set the background-image property to the VideoPanel's Texture.
-		Style.SetBackgroundImage( VideoPlayer.Texture );
+		Style.SetBackgroundImage( VideoTexture );
 		StateHasChanged();
 	}
 
@@ -236,10 +260,8 @@ public partial class VideoPanel : Panel, IVideoPanel
 	// Refresh detection
 	private string _previousVideoPath;
 	private VideoRoot _previousVideoRoot;
-	private Vector2 _videoTextureSize;
 
 	private bool VideoHasChanged => _previousVideoPath != VideoPath || _previousVideoRoot != VideoRoot;
-	private bool VideoSizeChanged => VideoPlayer.Texture.Size != _videoTextureSize;
 
 	public override void Tick()
 	{
@@ -254,25 +276,10 @@ public partial class VideoPanel : Panel, IVideoPanel
 			return;
 		}
 
-		if ( VideoSizeChanged )
-		{
-			_videoTextureSize = VideoPlayer.Texture.Size;
-			HandleResize();
-		}
-		
-		// The VideoPlayer texture will not update unless Present is called.
+		// The VideoTexture will not update unless Present is called.
 		VideoPlayer.Present();
 
 		DetectAndHandleLoop();
-	}
-
-	/// <summary>
-	/// By default, rebuilds the UI. Called whenever the VideoPlayer size is of a different
-	/// size than was previously recorded, which is expected to happen when loading a video.
-	/// </summary>
-	protected virtual void HandleResize()
-	{
-		StateHasChanged();
 	}
 
 	/// <summary>

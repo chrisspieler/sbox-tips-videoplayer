@@ -6,6 +6,10 @@
 public interface IVideoPanel : IValid
 {
 	/// <summary>
+	/// Returns true if the next video is currently being loaded.
+	/// </summary>
+	bool IsLoading { get; }
+	/// <summary>
 	/// The duration in seconds of the currently playing video.
 	/// </summary>
 	float Duration { get; }

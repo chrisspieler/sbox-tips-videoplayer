@@ -29,16 +29,18 @@ public partial class VideoControlOverlay : Panel
 	{
 		get
 		{
+			var overlayClass = VideoPanel?.IsLoading == true ? "loading" : string.Empty;
+
 			if ( !AutoHide )
-				return string.Empty;
+				return overlayClass;
 
 			var hovered = PseudoClass.HasFlag( PseudoClass.Hover );
 			if ( hovered )
 			{
 				_lastHovered = 0f;
-				return string.Empty;
+				return overlayClass;
 			}
-			return _lastHovered > AutoHideDelay ? "conceal" : string.Empty;
+			return _lastHovered > AutoHideDelay ? $"{overlayClass} conceal" : overlayClass;
 		}
 	}
 	private string TimecodeAreaClass => ProgressSeconds > 3600 || DurationSeconds > 3600
