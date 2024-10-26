@@ -10,9 +10,6 @@ namespace Duccsoft;
 /// </summary>
 public class AsyncVideoLoader : IValid, IDisposable
 {
-	[ConVar( "video_async_test_delay" )]
-	public static int TestDelayMilliseconds { get; set; } = 0;
-
 	public AsyncVideoLoader() 
 	{
 		VideoPlayer = new VideoPlayer();
@@ -77,11 +74,6 @@ public class AsyncVideoLoader : IValid, IDisposable
 
 		VideoPlayer.OnLoaded = _onLoaded;
 		VideoPlayer.OnAudioReady = _onAudioReady;
-
-		if ( TestDelayMilliseconds > 0 )
-		{
-			await GameTask.Delay( TestDelayMilliseconds, cancelToken );
-		}
 
 		playAction?.Invoke( VideoPlayer );
 
