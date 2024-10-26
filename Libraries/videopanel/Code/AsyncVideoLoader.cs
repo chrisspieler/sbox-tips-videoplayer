@@ -4,6 +4,10 @@ using System;
 
 namespace Duccsoft;
 
+/// <summary>
+/// Provides a handy asynchronous wrapper for loading a VideoPlayer and waiting
+/// until its video and audio are both loaded.
+/// </summary>
 public class AsyncVideoLoader : IValid, IDisposable
 {
 	[ConVar( "video_async_test_delay" )]
@@ -99,6 +103,9 @@ public class AsyncVideoLoader : IValid, IDisposable
 		IsLoading = false;
 	}
 
+	/// <summary>
+	/// Calls Dispose on the underlying VideoPlayer, if it is one that was created by this object.
+	/// </summary>
 	public void Dispose()
 	{
 		if ( !_ownsVideoPlayer )

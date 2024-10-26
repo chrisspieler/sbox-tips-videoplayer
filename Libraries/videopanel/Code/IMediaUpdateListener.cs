@@ -9,8 +9,13 @@ namespace Duccsoft;
 /// </summary>
 public interface IMediaUpdateListener : IDisposable
 {
+	/// <summary>
+	/// Contains the code that must run every frame. Will only be called
+	/// if this object has been registered with a MediaUpdateSystem.
+	/// </summary>
 	void MediaUpdate();
 
+	/// <inheritdoc cref="MediaUpdateSystem.Register(IMediaUpdateListener)"/>
 	public static void Register( IMediaUpdateListener listener )
 	{
 		if ( listener is null )
@@ -23,6 +28,7 @@ public interface IMediaUpdateListener : IDisposable
 		system.Register( listener );
 	}
 
+	/// <inheritdoc cref="MediaUpdateSystem.Unregister(IMediaUpdateListener)"/>
 	public static void Unregister( IMediaUpdateListener listener )
 	{
 		if ( listener is null )

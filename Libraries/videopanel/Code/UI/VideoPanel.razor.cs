@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 
 namespace Duccsoft;
 
+/// <summary>
+/// A Panel that manages an instance of a VideoPlayer, using its texture as the background image.
+/// Supports all the playback controls of VideoPlayer.
+/// </summary>
 public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 {
 	[Change]

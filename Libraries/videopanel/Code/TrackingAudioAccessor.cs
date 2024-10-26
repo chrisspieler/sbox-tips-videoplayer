@@ -9,17 +9,26 @@ namespace Duccsoft;
 /// </summary>
 public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 {
+	/// <summary>
+	/// Creates a new TrackingAudioAccessort that does not yet target a VideoPlayer.
+	/// </summary>
 	public TrackingAudioAccessor() 
 	{
 		IMediaUpdateListener.Register( this );
 	}
-
+	
+	/// <summary>
+	/// Creates a new TrackingAudioAccessor targeting the specified VideoPlayer.
+	/// </summary>
 	public TrackingAudioAccessor( VideoPlayer videoPlayer )
 	{
 		VideoPlayer = videoPlayer;
 		IMediaUpdateListener.Register( this );
 	}
 
+	/// <summary>
+	/// The instance of VideoPlayer that shall have its audio settings changed by this object.
+	/// </summary>
 	public VideoPlayer VideoPlayer 
 	{
 		get => _videoPlayer;
@@ -31,6 +40,10 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 	}
 	private VideoPlayer _videoPlayer;
 
+	/// <summary>
+	/// The GameObject from which to play the sound. The sound will automatically
+	/// follow the GameObject.
+	/// </summary>
 	public GameObject Target 
 	{
 		get => _target;
@@ -47,6 +60,10 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 	}
 	private GameObject _target;
 
+	/// <summary>
+	/// The position from which to play the sound. Setting this will also
+	/// set <see cref="Target"/> to null.
+	/// </summary>
 	public Vector3 Position 
 	{
 		get => _position;
@@ -59,6 +76,7 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 	}
 	private Vector3 _position;
 
+	/// <inheritdoc cref="IAudioAccessor.Volume"/>
 	public float Volume 
 	{ 
 		get => _volume;
@@ -70,6 +88,7 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 	}
 	private float _volume = 1f;
 
+	/// <inheritdoc cref="IAudioAccessor.ListenLocal"/>
 	public bool ListenLocal 
 	{
 		get => _listenLocal;
@@ -84,6 +103,8 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 		}
 	}
 	private bool _listenLocal;
+
+	/// <inheritdoc cref="IAudioAccessor.TargetMixer"/>
 	public Mixer TargetMixer
 	{
 		get => _targetMixer;
@@ -95,6 +116,7 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 	}
 	private Mixer _targetMixer;
 
+	/// <inheritdoc cref="IAudioAccessor.Muted"/>
 	public bool Muted
 	{
 		get => _muted;
@@ -107,7 +129,8 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 	private bool _muted;
 
 	/// <summary>
-	/// Updates properties of the VideoPlayer to match this configuration.
+	/// Updates properties of the underlying audio player to match the values specified in this object.
+	/// This will automatically be called on every frame.
 	/// </summary>
 	public void MediaUpdate()
 	{
@@ -126,6 +149,9 @@ public class TrackingAudioAccessor : IAudioAccessor, IMediaUpdateListener
 		VideoPlayer.Audio.TargetMixer = TargetMixer;
 	}
 
+	/// <summary>
+	/// Unregisters this <see cref="IMediaUpdateListener"/> from <see cref="MediaUpdateSystem"/>.
+	/// </summary>
 	public void Dispose()
 	{
 		IMediaUpdateListener.Unregister( this );

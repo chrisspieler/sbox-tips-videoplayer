@@ -3,6 +3,9 @@ using System;
 
 namespace Duccsoft;
 
+/// <summary>
+/// A Panel meant to stretch over a VideoPanel and provide a progress bar and buttons.
+/// </summary>
 public partial class VideoControlOverlay : Panel
 {
 	public IVideoPanel VideoPanel { get; set; }
