@@ -12,17 +12,17 @@ public class AsyncVideoLoader
 {
 	public AsyncVideoLoader() 
 	{
-		VideoPlayer = new VideoPlayer();
+		_videoPlayer = new VideoPlayer();
 	}
 
 	public AsyncVideoLoader( VideoPlayer player )
 	{
-		VideoPlayer = player ?? new VideoPlayer();
+		_videoPlayer = player ?? new VideoPlayer();
 	}
 
-	public VideoPlayer VideoPlayer { get; private set; }
 	public bool IsLoading { get; private set; }
 
+	private VideoPlayer _videoPlayer;
 	private Action _onLoaded;
 	private Action _onAudioReady;
 
@@ -31,7 +31,7 @@ public class AsyncVideoLoader
 		void Play( VideoPlayer player ) => player.Play( url );
 
 		await Load( Play, cancelToken );
-		return VideoPlayer;
+		return _videoPlayer;
 	}
 
 	public async Task<VideoPlayer> LoadFromFile( BaseFileSystem fileSystem, string path, CancellationToken cancelToken )
@@ -39,7 +39,7 @@ public class AsyncVideoLoader
 		void Play( VideoPlayer player ) => player.Play( fileSystem, path );
 
 		await Load( Play, cancelToken );
-		return VideoPlayer;
+		return _videoPlayer;
 	}
 
 	private async Task Load( Action<VideoPlayer> playAction, CancellationToken cancelToken = default )
@@ -62,17 +62,17 @@ public class AsyncVideoLoader
 		_onLoaded = () => videoLoaded = true;
 		_onAudioReady = () => audioLoaded = true;
 
-		VideoPlayer.OnLoaded = _onLoaded;
-		VideoPlayer.OnAudioReady = _onAudioReady;
+		_videoPlayer.OnLoaded = _onLoaded;
+		_videoPlayer.OnAudioReady = _onAudioReady;
 
-		playAction?.Invoke( VideoPlayer );
+		playAction?.Invoke( _videoPlayer );
 
 		// Non-blocking spin until video and audio are loaded.
 		while ( !videoLoaded || !audioLoaded )
 		{
 			// If OnLoaded or OnAudioReady are changed externally before we're finished
 			// loading, the video will likely never load. Abort to avoid spinning forever.
-			var callbacksChanged = _onLoaded != VideoPlayer.OnLoaded || _onAudioReady != VideoPlayer.OnAudioReady;
+			var callbacksChanged = _onLoaded != _videoPlayer.OnLoaded || _onAudioReady != _videoPlayer.OnAudioReady;
 			if ( callbacksChanged || cancelToken.IsCancellationRequested )
 			{
 				IsLoading = false;
