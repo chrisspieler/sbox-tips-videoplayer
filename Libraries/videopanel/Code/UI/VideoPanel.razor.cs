@@ -124,6 +124,7 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 		}
 
 		// Loop when the video concludes.
+		// We use a custom looping mechanism, because VideoPlayer.Repeat seems to mess up PlaybackTime.
 		if ( ShouldLoop && HasReachedEnd )
 		{
 			_videoPlayer.Seek( 0f );
