@@ -212,7 +212,7 @@ public partial class VideoPanel : Panel, IVideoPanel
 	}
 
 	/// <summary>
-	/// By default, sets the background image of this panel to VideoPlayer.Texture and rebuilds the UI.
+	/// By default, sets the background image of this panel to VideoTexture and rebuilds the UI.
 	/// <br/><br/>
 	/// Called in PlayVideo after a video is loaded, but before OnPostVideoLoad.
 	/// </summary>
@@ -221,7 +221,6 @@ public partial class VideoPanel : Panel, IVideoPanel
 		if ( VideoPlayer is null )
 			return;
 
-		// Set the background-image property to the VideoPanel's Texture.
 		Style.SetBackgroundImage( VideoTexture );
 		StateHasChanged();
 	}
