@@ -8,22 +8,16 @@ namespace Duccsoft;
 /// Provides a handy asynchronous wrapper for loading a VideoPlayer and waiting
 /// until its video and audio are both loaded.
 /// </summary>
-public class AsyncVideoLoader : IDisposable
+public class AsyncVideoLoader
 {
 	public AsyncVideoLoader() 
 	{
 		VideoPlayer = new VideoPlayer();
-		_ownsVideoPlayer = true;
 	}
 
 	public AsyncVideoLoader( VideoPlayer player )
 	{
-		if ( player is null )
-		{
-			player = new VideoPlayer();
-			_ownsVideoPlayer = true;
-		}
-		VideoPlayer = player;
+		VideoPlayer = player ?? new VideoPlayer();
 	}
 
 	public VideoPlayer VideoPlayer { get; private set; }
@@ -31,7 +25,6 @@ public class AsyncVideoLoader : IDisposable
 
 	private Action _onLoaded;
 	private Action _onAudioReady;
-	private bool _ownsVideoPlayer;
 
 	public async Task<VideoPlayer> LoadFromUrl( string url, CancellationToken cancelToken = default )
 	{
@@ -90,17 +83,5 @@ public class AsyncVideoLoader : IDisposable
 		}
 
 		IsLoading = false;
-	}
-
-	/// <summary>
-	/// Calls Dispose on the underlying VideoPlayer, if it is one that was created by this object.
-	/// </summary>
-	public void Dispose()
-	{
-		if ( !_ownsVideoPlayer )
-			return;
-
-		VideoPlayer?.Dispose();
-		GC.SuppressFinalize( this );
 	}
 }

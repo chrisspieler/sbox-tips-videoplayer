@@ -9,7 +9,7 @@ namespace Duccsoft;
 /// A Panel that manages an instance of a VideoPlayer, using its texture as the background image.
 /// Supports all the playback controls of VideoPlayer.
 /// </summary>
-public partial class VideoPanel : Panel, IDisposable, IVideoPanel
+public partial class VideoPanel : Panel, IVideoPanel
 {
 	/// <summary>
 	/// The path/url of a video relative to VideoRoot.
@@ -285,19 +285,8 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 		}
 	}
 
-	/// <summary>
-	/// Stops loading videos, and disposes of our VideoPlayer and TrackingAudioAccessor.
-	/// </summary>
-	public virtual void Dispose()
-	{
-		CancelVideoLoad();
-		VideoPlayer?.Dispose();
-		_audioAccessor?.Dispose();
-		GC.SuppressFinalize( this );
-	}
-
 	public override void OnDeleted()
 	{
-		Dispose();
+		_audioAccessor?.Dispose();
 	}
 }
