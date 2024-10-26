@@ -10,21 +10,29 @@
     }
 }
 
+@keyframes hide {
+    from {
+        opacity: 1;
+        transform: translateY( 0% );
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY( 100% );
+    }
+}
+
 VideoControlOverlay {
     position: absolute;
     width: 100%;
     height: 100%;
     overflow: hidden;
 
-    &.auto-hide {
-        &:hover > #bottomBar {
-            transform: translateY( 0% );
-            opacity: 1;
-            animation: pop-up 0.08s;
-        }
+    &.conceal > #bottomBar {
+        transform: translateY( 100% );
+        opacity: 0;
+        animation: hide 0.08s;
     }
-
-
 
     > #bottomBar {
         position: absolute;
@@ -35,7 +43,10 @@ VideoControlOverlay {
         font-family: Poppins;
         background-color: #000000FC;
         color: #FFFFFFF0;
-        opacity: 0;
+
+        transform: translateY( 0% );
+        opacity: 1;
+        animation: pop-up 0.08s;
 
         .button {
             border: 1px solid #FFFFFF02;

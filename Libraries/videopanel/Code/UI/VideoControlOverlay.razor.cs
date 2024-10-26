@@ -7,8 +7,25 @@ public partial class VideoControlOverlay : Panel
 {
 	public IVideoPanel VideoPanel { get; set; }
 	public bool AutoHide { get; set; } = true;
+	public float AutoHideDelay { get; set; } = 0f;
 
-	private string OverlayClass => AutoHide ? "auto-hide" : string.Empty;
+	private string OverlayClass
+	{
+		get
+		{
+			if ( !AutoHide )
+				return string.Empty;
+
+			var hovered = PseudoClass.HasFlag( PseudoClass.Hover );
+			if ( hovered )
+			{
+				_lastHovered = 0f;
+				return string.Empty;
+			}
+			return _lastHovered > AutoHideDelay ? "conceal" : string.Empty;
+		}
+	}
+	private RealTimeSince _lastHovered = 20f;
 
 	protected override int BuildHash()
 	{
