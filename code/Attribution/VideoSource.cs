@@ -13,6 +13,14 @@ public class VideoSource : AssetSource
 	private const string RES_ICON = "video_file";
 	private const string RES_BG_COLOR = "cornflowerblue";
 
+
+	/// <summary>
+	/// The location to search for the VideoPath.
+	/// </summary>
+	public VideoRoot VideoRoot { get; set; } = VideoRoot.MountedFileSystem;
+	/// <summary>
+	/// Depending on VideoRoot, this may be a URL or relative file path.
+	/// </summary>
 	public string VideoPath { get; set; }
 	public int Year { get; set; }
 

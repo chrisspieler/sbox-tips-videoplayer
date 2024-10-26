@@ -22,7 +22,7 @@
     <div id="videoArea">
         @if ( UseVideoPlayer )
         {
-            <VideoPanel @ref=VideoPanel VideoPath=@CurrentVideoPath AudioSource=@AudioSource/>
+            <VideoPanel @ref=VideoPanel VideoRoot=@CurrentVideoRoot VideoPath=@CurrentVideoPath AudioSource=@AudioSource/>
             <VideoControlOverlay VideoPanel=@VideoPanel AutoHideDelay=@(1f)/>
         }
         else

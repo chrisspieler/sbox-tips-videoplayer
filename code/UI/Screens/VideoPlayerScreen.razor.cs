@@ -4,6 +4,7 @@ public partial class VideoPlayerScreen : PanelComponent
 {
 	[Property] public VideoSource CurrentVideo { get; set; }
 	public string CurrentVideoPath => CurrentVideo?.VideoPath;
+	public VideoRoot CurrentVideoRoot => CurrentVideo?.VideoRoot ?? default;
 
 	[Property] public List<VideoSource> Videos = new();
 	[Property] public bool AutoPopulateVideosOnStart { get; set; }
