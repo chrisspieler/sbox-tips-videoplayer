@@ -122,20 +122,48 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 	/// </summary>
 	private async Task PlayVideo()
 	{
+		// Now we're using the new video path and root.
 		_previousVideoPath = VideoPath;
 		_previousVideoRoot = VideoRoot;
 
+		// Trying to play nothing? Success means stopping the current video.
 		if ( string.IsNullOrWhiteSpace( VideoPath ) )
 		{
 			Stop();
 			return;
 		}
 
+		// Cancel whatever other video might be loading.
 		if ( IsLoading )
 		{
 			CancelVideoLoad();
 		}
 
+		// Initialize our stuff.
+		Initialize();
+
+		// Cache the CancellationToken because Task.IsCanceled isn't whitelisted,
+		// and subsequent calls to PlayVideo would create a new CancellationTokenSource.
+		var cancelToken = _cancelSource.Token;
+
+		await PlayFromVideoRoot( _videoLoader, cancelToken );
+
+		// If loading the video was cancelled...
+		if ( cancelToken.IsCancellationRequested )
+		{
+			// ...don't touch the video player, and don't update anything, because
+			// there may be another video that began loading later and finished before
+			// this one, and we don't want to overwrite the effect it had.
+			return;
+		}
+
+		// Set the background-image property to the VideoPanel's Texture.
+		Style.SetBackgroundImage( _videoPlayer.Texture );
+		StateHasChanged();
+	}
+
+	private void Initialize()
+	{
 		_videoPlayer ??= new VideoPlayer();
 		_audioAccessor ??= new TrackingAudioAccessor();
 
@@ -143,23 +171,6 @@ public partial class VideoPanel : Panel, IDisposable, IVideoPanel
 		_audioAccessor.Target = AudioSource;
 		_videoLoader = new AsyncVideoLoader( _videoPlayer );
 		_cancelSource = new CancellationTokenSource();
-
-		// Make copies of the things that might get clobbered while we await.
-		var cancelToken = _cancelSource.Token;
-		var videoLoader = _videoLoader;
-
-		var videoPlayer = await PlayFromVideoRoot( videoLoader, cancelToken );
-
-		if ( cancelToken.IsCancellationRequested )
-		{
-			videoPlayer?.Stop();
-			return;
-		}
-		_videoPlayer = videoPlayer;
-
-		// Set the background-image property to the VideoPanel's Texture.
-		Style.SetBackgroundImage( videoPlayer.Texture );
-		StateHasChanged();
 	}
 
 	private async Task<VideoPlayer> PlayFromVideoRoot( AsyncVideoLoader loader, CancellationToken cancelToken )
