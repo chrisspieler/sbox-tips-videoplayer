@@ -162,7 +162,6 @@ public partial class VideoPanel : Panel, IVideoPanel
 		// If loading the video was cancelled...
 		if ( cancelToken.IsCancellationRequested )
 		{
-			Log.Info( "cancel" );
 			// ...don't touch the video player, and don't update anything, because
 			// there may be another video that began loading later and finished before
 			// this one, and we don't want to overwrite the effect it had.
