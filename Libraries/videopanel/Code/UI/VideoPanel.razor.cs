@@ -125,6 +125,10 @@ public partial class VideoPanel : Panel, IVideoPanel
 		_previousVideoPath = VideoPath;
 		_previousVideoRoot = VideoRoot;
 
+		// Blank out the background while loading a new video, or when stopping the previous one.
+		Style.SetBackgroundImage( (Texture)null );
+		StateHasChanged();
+
 		// Trying to play nothing? Success means stopping the current video.
 		if ( string.IsNullOrWhiteSpace( VideoPath ) )
 		{
