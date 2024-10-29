@@ -1,0 +1,11 @@
+{
+  "VideoRoot": "WebStream",
+  "VideoPath": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Craters_of_the_Moon_1.webm",
+  "Year": 2011,
+  "Title": "Craters of the Moon 1",
+  "Author": "https://commons.wikimedia.org/wiki/User:Fredlyfish4",
+  "Url": "https://commons.wikimedia.org/wiki/File:Craters_of_the_Moon_1.webm",
+  "License": "licenses/cc_by-sa_3_0.lcns",
+  "__references": [],
+  "__version": 0
+}

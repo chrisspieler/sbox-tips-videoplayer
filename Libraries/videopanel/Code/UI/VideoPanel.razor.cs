@@ -9,6 +9,7 @@ namespace Duccsoft;
 /// A Panel that manages an instance of a VideoPlayer, using its texture as the background image.
 /// Supports all the playback controls of VideoPlayer.
 /// </summary>
+[Alias("video")]
 public partial class VideoPanel : Panel, IVideoPanel
 {
 	/// <summary>
@@ -24,6 +25,43 @@ public partial class VideoPanel : Panel, IVideoPanel
 	/// If true, the video will automatically loop whenever HasReachedEnd is true.
 	/// </summary>
 	public virtual bool ShouldLoop { get; set; } = true;
+	public virtual bool AutoPlay { get; set; } = true;
+	public virtual bool StartMuted { get; set; } = false;
+	
+	public virtual float Width
+	{
+		get
+		{
+			if ( Style is null || Parent is null )
+				return 0f;
+
+			return Style.Width.Value.GetPixels( Parent.Box.Rect.Width );
+		}
+		set
+		{
+			if ( Style is null )
+				return;
+
+			Style.Width = Length.Pixels( value );
+		}
+	}
+	public virtual float Height
+	{
+		get
+		{
+			if ( Style is null || Parent is null )
+				return 0f;
+
+			return Style.Height.Value.GetPixels( Parent.Box.Rect.Height );
+		}
+		set
+		{
+			if ( Style is null )
+				return;
+
+			Style.Height = Length.Pixels( value );
+		}
+	}
 
 	/// <summary>
 	/// If true, the video is in the process of being loaded (e.g. from a remote server).
@@ -102,9 +140,33 @@ public partial class VideoPanel : Panel, IVideoPanel
 	private Task<VideoPlayer> _videoLoadTask;
 	private TrackingAudioAccessor _audioAccessor;
 	private CancellationTokenSource _cancelSource = new();
+	private bool _shouldPauseNextFrame;
 	private RealTimeSince _sinceLastTextureUpdate;
 
+	public override void SetProperty( string name, string value )
+	{
+		if ( name == "src" )
+		{
+			VideoPath = value;
+		}
 
+		if ( name == "width" )
+		{
+			Style.Width = Length.Pixels( value.ToFloat( 160 ) );
+		}
+
+		if ( name == "height" )
+		{
+			Style.Height = Length.Pixels( value.ToFloat( 90 ) );
+		}
+
+		if ( name == "muted" )
+		{
+			StartMuted = value.ToBool();
+		}
+
+		base.SetProperty( name, value );
+	}
 
 	protected async override void OnAfterTreeRender( bool firstTime )
 	{
@@ -114,6 +176,7 @@ public partial class VideoPanel : Panel, IVideoPanel
 			return;
 
 		VideoPlayer = new VideoPlayer();
+
 		// Attempt to play whatever video is specified by the initial VideoPath and VideoRoot.
 		await PlayVideo();
 	}
@@ -168,6 +231,7 @@ public partial class VideoPanel : Panel, IVideoPanel
 			return;
 		}
 
+		_shouldPauseNextFrame = !AutoPlay;
 		ConfigureAudio();
 		UpdateBackgroundImage();
 		OnPostVideoLoad();
@@ -195,6 +259,12 @@ public partial class VideoPanel : Panel, IVideoPanel
 			UpdateBackgroundImage();
 		}
 		VideoTexture.Update( span, 0, 0, width, height );
+
+		if ( _shouldPauseNextFrame )
+		{
+			VideoPlayer.Pause();
+			_shouldPauseNextFrame = false;
+		}
 	}
 
 	/// <summary>
@@ -205,7 +275,11 @@ public partial class VideoPanel : Panel, IVideoPanel
 	/// </summary>
 	protected virtual void ConfigureAudio()
 	{
-		_audioAccessor ??= new TrackingAudioAccessor();
+		if ( _audioAccessor is null )
+		{
+			_audioAccessor = new TrackingAudioAccessor();
+			_audioAccessor.Muted = StartMuted;
+		}
 		_audioAccessor.VideoPlayer = VideoPlayer;
 		_audioAccessor.Target = AudioSource;
 	}

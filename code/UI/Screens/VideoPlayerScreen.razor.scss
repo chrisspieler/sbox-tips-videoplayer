@@ -19,7 +19,7 @@
         #switchArea {
             flex-direction: column;
             width: 100%;
-            align-items:center;
+            align-items: center;
         }
 
         .switch-option {
@@ -52,19 +52,12 @@
 
     #videoArea {
         position: relative;
-        width: 640px;
-        height: 360px;
         border: 1px solid #FFFFFF05;
         border-radius: 5px;
 
         > StyleVideoPanel {
-            width: 100%;
-            height: 100%;
-        }
-
-        > VideoPanel {
-            width: 100%;
-            height: 100%;
+            width: 640px;
+            height: 360px;
         }
     }
 
