@@ -1,4 +1,5 @@
-﻿using Sandbox.UI;
+﻿using Sandbox.Audio;
+using Sandbox.UI;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -131,6 +132,19 @@ public partial class VideoPanel : Panel, IVideoPanel
 		}
 	}
 	private GameObject _audioSource;
+	public MixerHandle TargetMixer
+	{
+		get => _targetMixer;
+		set
+		{
+			_targetMixer = value;
+			if ( _audioAccessor is not null )
+			{
+				_audioAccessor.TargetMixer = value.Get();
+			}
+		}
+	}
+	private MixerHandle _targetMixer;
 	#endregion
 
 	// Internal state
@@ -272,6 +286,7 @@ public partial class VideoPanel : Panel, IVideoPanel
 		};
 		_audioAccessor.VideoPlayer = VideoPlayer;
 		_audioAccessor.Target = AudioSource;
+		_audioAccessor.TargetMixer = TargetMixer.Get();
 	}
 
 	/// <summary>

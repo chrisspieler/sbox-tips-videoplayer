@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sandbox.Audio;
+using System;
 
 public partial class VideoPlayerScreen : PanelComponent
 {
@@ -11,6 +12,7 @@ public partial class VideoPlayerScreen : PanelComponent
 	[Property, InputAction] public string ForwardAction { get; set; } = "right";
 	[Property, InputAction] public string BackAction { get; set; } = "left";
 	[Property] public GameObject PanningAudioSource { get; set; }
+	[Property] public MixerHandle TargetMixer { get; set; }
 
 	private VideoPanel VideoPanel { get; set; }
 	private bool UseVideoPlayer { get; set; }
