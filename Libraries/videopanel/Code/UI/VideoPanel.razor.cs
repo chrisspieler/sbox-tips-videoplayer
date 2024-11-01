@@ -28,6 +28,11 @@ public partial class VideoPanel : Panel, IVideoPanel
 	public bool ShouldLoop { get; set; } = true;
 	public bool AutoPlay { get; set; } = true;
 	public bool StartMuted { get; set; } = false;
+
+
+	public bool ShowControls { get; set; } = false;
+	public bool AutoHideControls { get; set; } = true;
+	public float AutoHideDelay { get; set; } = 1f;
 	
 	public float Width
 	{
@@ -156,6 +161,8 @@ public partial class VideoPanel : Panel, IVideoPanel
 	private CancellationTokenSource _cancelSource = new();
 	private bool _shouldPauseNextFrame;
 	private RealTimeSince _sinceLastTextureUpdate;
+
+	protected override int BuildHash() => HashCode.Combine( ShowControls, AutoHideControls, AutoHideDelay );
 
 	public override void SetProperty( string name, string value )
 	{

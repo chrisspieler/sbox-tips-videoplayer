@@ -23,8 +23,8 @@
         @if ( UseVideoPlayer )
         {
             <VideoPanel @ref=VideoPanel src=@CurrentVideoPath VideoRoot=@CurrentVideoRoot AudioSource=@AudioSource
-                width=640 height=360 AutoPlay=@true muted="false" TargetMixer=@TargetMixer/>
-            <VideoControlOverlay VideoPanel=@VideoPanel AutoHideDelay=@(1f)/>
+                width=640 height=360 AutoPlay=@true muted="false" TargetMixer=@TargetMixer 
+                ShowControls=@ShowControls AutoHideControls=@AutoHide AutoHideDelay=@AutoHideDelay/>
         }
         else
         {

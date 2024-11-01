@@ -69,13 +69,21 @@
               "__type": "VideoPlayerScreen",
               "__guid": "aa0b9eba-4880-43c4-b315-809ef89b3cc9",
               "Videos": [],
+              "AutoHide": true,
+              "AutoHideDelay": 1,
               "AutoPopulateVideosOnStart": true,
               "BackAction": "left",
               "ForwardAction": "right",
               "PanningAudioSource": {
                 "_type": "gameobject",
                 "go": "0074a357-8c01-445f-9972-50d750239ea1"
-              }
+              },
+              "ShowControls": true,
+              "TargetMixer": {
+                "Name": "unknown",
+                "Id": "00000000-0000-0000-0000-000000000000"
+              },
+              "UseVideoPlayer": true
             }
           ]
         }
